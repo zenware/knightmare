@@ -23,7 +23,6 @@ const (
 type Chessboard [8][8]int
 
 func (board *Chessboard) Initialize() {
-	// TODO: Use names rank and file.
 	*board = Chessboard{
 		{BlackRook, BlackKnight, BlackBishop, BlackQueen, BlackKing, BlackBishop, BlackKnight, BlackRook},
 		{BlackPawn, BlackPawn, BlackPawn, BlackPawn, BlackPawn, BlackPawn, BlackPawn, BlackPawn},
@@ -78,8 +77,42 @@ func (board Chessboard) Print() {
 	}
 }
 
+// Evaluate() evaluates a chessboard and returns an advantage score.
+// Pawns are worth 1, Knights and Bishops are worth 3, Rooks are worth 5, Queens are worth 9.
+// Whoever has a higher number has the advantage, expressed as a difference from 0.
+// Black is negative, White is positive.
+func (board Chessboard) Evaluate() int {
+	var score int = 0
+
+	for rank := 0; rank <= 7; rank++ {
+		for file := 0; file < 8; file++ {
+			switch board[rank][file] {
+			case WhitePawn:
+				score += 1
+			case WhiteKnight, WhiteBishop:
+				score += 3
+			case WhiteRook:
+				score += 5
+			case WhiteQueen:
+				score += 9
+			case BlackPawn:
+				score -= 1
+			case BlackKnight, BlackBishop:
+				score -= 3
+			case BlackRook:
+				score -= 5
+			case BlackQueen:
+				score -= 9
+			}
+		}
+	}
+
+	return score
+}
+
 func main() {
 	var cb Chessboard
 	cb.Initialize()
 	cb.Print()
+	fmt.Println("Position Evaluation: ", cb.Evaluate())
 }
